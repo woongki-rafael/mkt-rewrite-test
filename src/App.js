@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { RecoilRoot } from "recoil";
+import TodoContainer from "./Todo/TodoContainer";
+import UserContainer from "./User/UserContainer";
+import MyInfoContainer from "./MyInfo/MyInfoContainer";
+
+const queryClient = new QueryClient();
 
 function App() {
+  const [page, changePage] = useState('main');
+
+  const handleNavBtnClick = (nextPage) => {
+    changePage(nextPage);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <div className="App">
+          <nav>
+            <ul>
+              <li><button onClick={() => handleNavBtnClick('main')}>main</button></li>
+              <li><button onClick={() => handleNavBtnClick('todos')}>todos</button></li>
+              <li><button onClick={() => handleNavBtnClick('users')}>All users</button></li>
+              <li><button onClick={() => handleNavBtnClick('myInfo')}>My Info</button></li>
+            </ul>
+          </nav>
+          { page === 'main' && <div><h1>여기는 공허한 메인 페이지</h1></div> }
+          { page === 'todos' && <TodoContainer /> }
+          { page === 'users' && <UserContainer /> }
+          { page === 'myInfo' && <MyInfoContainer /> }
+        </div>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </RecoilRoot>
+    </QueryClientProvider>
+
   );
 }
 
