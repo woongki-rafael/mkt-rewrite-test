@@ -45,7 +45,7 @@ const useGetUserInfoQuery = (id, opts = {}) =>
     }
   );
 
-const useSetUserInfoMutation = () => {
+const useSetUserInfoMutation = ({ customFn }) => {
   const queryClient = useQueryClient();
   return useMutation(newUserInfo => {
     return fetch(`http://localhost:4000/user/${newUserInfo.id}`, {
@@ -58,8 +58,8 @@ const useSetUserInfoMutation = () => {
       body: JSON.stringify(newUserInfo)
     });
   }, {
-    onSuccess: (data, variables) => {
-      console.log(data, variables);
+    onSuccess: () => {
+      if(customFn && typeof customFn === 'function') customFn();
       queryClient.invalidateQueries('users');
     }
   })
